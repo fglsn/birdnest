@@ -1,0 +1,21 @@
+{
+	"local": {
+		"driver": "pg",
+		"user": "postgres",
+		"password": "postgres",
+		"host": "localhost",
+		"database": "birdnest",
+		"port": "5434",
+		"schema": "public"
+	},
+	"test": {
+		"driver": "pg",
+		"user": "postgres",
+		"password": "postgres",
+		"host": "localhost",
+		"database": "birdnest-test",
+		"port": "5435",
+		"schema": "public"
+	},
+	"sql-file": true
+}
