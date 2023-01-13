@@ -6,6 +6,23 @@ export type DroneData = {
 	serialNumber: string;
 };
 
+export type ParsedReport = {
+	snapshotTimestamp: string;
+	drones: DroneData[];
+};
+
+export type NestPosition = {
+	x: 250000;
+	y: 250000;
+};
+
+export type Coordinates = {
+	x: number;
+	y: number;
+};
+
+export type ViolatorDrone = DroneData & { distance: number };
+
 export const User = t.type({
 	id: t.number,
 	pilot_name: t.string,
