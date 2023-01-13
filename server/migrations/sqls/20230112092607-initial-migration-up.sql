@@ -1,11 +1,11 @@
-create table violating_entries (
+create table violator_entries (
 	id bigserial primary key,
 	pilot_name varchar not null,
-	email varchar not null,
 	phone_number varchar not null,
-	lat double precision not null,
-	lng double precision not null,
-	min_distance double precision not null,
-	captured_at timestamptz not null default now(),
-	expires_at timestamptz not null default now() + time '00:10'
+	email varchar not null,
+	serial_number varchar not null unique,
+	position_x double precision not null,
+	position_y double precision not null,
+	distance double precision not null,
+	last_seen timestamptz not null
 )
