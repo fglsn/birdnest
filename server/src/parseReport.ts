@@ -53,5 +53,5 @@ export const parseReport = (reportPayload: string) => {
 		return drone;
 	});
 
-	return { snapshotTimestamp, drones };
+	return { snapshotTimestamp: new Date(snapshotTimestamp), drones };
 };

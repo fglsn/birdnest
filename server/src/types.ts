@@ -1,5 +1,3 @@
-import * as t from 'io-ts';
-
 export type DroneData = {
 	positionX: number;
 	positionY: number;
@@ -7,13 +5,8 @@ export type DroneData = {
 };
 
 export type ParsedReport = {
-	snapshotTimestamp: string;
+	snapshotTimestamp: Date;
 	drones: DroneData[];
-};
-
-export type NestPosition = {
-	x: 250000;
-	y: 250000;
 };
 
 export type Coordinates = {
@@ -23,16 +16,22 @@ export type Coordinates = {
 
 export type ViolatorDrone = DroneData & { distance: number };
 
-export const User = t.type({
-	id: t.number,
-	pilot_name: t.string,
-	email: t.string,
-	phone_number: t.string,
-	lat: t.number,
-	lng: t.number,
-	min_distance: t.number,
-	captured_at: t.string,
-	expires_at: t.string
-});
+export type Pilot = {
+	pilotId: string;
+	firstName: string;
+	lastName: string;
+	phoneNumber: string;
+	email: string;
+	createdDt: string;
+};
 
-export type User = t.TypeOf<typeof User>;
+export type ViolatorEntry = {
+	name: string;
+	phone: string;
+	email: string;
+	serialNumber: string;
+	positionX: number;
+	positionY: number;
+	distance: number;
+	lastSeen: Date;
+};

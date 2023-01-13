@@ -5,7 +5,8 @@ import axios from 'axios';
 import cors from 'cors';
 
 import { parseReport } from './parseReport';
-import { getViolators } from './getViolators';
+import { addNewViolators, findAndUpdateViolatingDrones } from './getViolators';
+import { getViolators } from './queries';
 export const app = express();
 
 app.use(express.json({ limit: '50mb' }));
@@ -16,13 +17,12 @@ app.get(
 	'/capture',
 	asyncHandler(async (_req, res) => {
 		try {
-			const response = await axios.get(
-				'http://assignments.reaktor.com/birdnest/drones'
-			);
+			const response = await axios.get('http://assignments.reaktor.com/birdnest/drones');
 			const parsedReport = parseReport(response.data as string);
-			const violators = getViolators(parsedReport);
-			console.log('violators: ', violators);
-			res.status(200).json(parsedReport);
+			const newViolators = await findAndUpdateViolatingDrones(parsedReport);
+			await addNewViolators(newViolators, parsedReport.snapshotTimestamp);
+			const violators = await getViolators();
+			res.status(200).json(violators);
 		} catch (err) {
 			console.log(err);
 		}
