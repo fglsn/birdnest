@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { Coordinates, ParsedReport, ViolatorDrone, Pilot } from './types';
-import { addNewEntry, checkReportEntry, updateExistingRecord } from './queries';
+import { addNewPilot, addPostitonEntries, checkReportEntry, updatePilots } from './queries';
 
 const nestPosition: Coordinates = { x: 250000, y: 250000 };
 
@@ -32,15 +32,8 @@ export const filterExistingAndNotExistingViolators = async (
 			recordExists ? existingViolators.push(drone) : newViolators.push(drone);
 		})
 	);
-	return { existingViolators, newViolators };
-};
 
-export const updateExistingViolators = async (existingViolators: ViolatorDrone[], lastSeen: Date) => {
-	await Promise.all(
-		existingViolators.map(async (violator) => {
-			await updateExistingRecord(violator, lastSeen);
-		})
-	);
+	return { existingViolators, newViolators };
 };
 
 const getPilotData = async (serialNumber: string) => {
@@ -66,14 +59,22 @@ export const addNewViolators = async (violators: ViolatorDrone[], snapshotTimest
 				email: pilotData.email
 			};
 
-			await addNewEntry({ ...pilotContacts, ...drone, lastSeen: snapshotTimestamp });
+			await addNewPilot({
+				...pilotContacts,
+				serialNumber: drone.serialNumber,
+				lastSeen: snapshotTimestamp,
+				closestDistance: drone.distance
+			});
 		})
 	);
 };
 
 export const processDroneReport = async (parsedReport: ParsedReport) => {
 	const violatingDrones = getViolatingDrones(parsedReport);
-	const lastSeen = parsedReport.snapshotTimestamp;
-	const { existingViolators, newViolators } = await filterExistingAndNotExistingViolators(violatingDrones);
-	await Promise.all([updateExistingViolators(existingViolators, lastSeen), addNewViolators(newViolators, lastSeen)]);
+	console.log('all violating drones: ', violatingDrones);
+	const capturedAt = parsedReport.snapshotTimestamp;
+	await Promise.all(violatingDrones.map(async (drone) => await addPostitonEntries(drone, capturedAt)));
+	const violators = await filterExistingAndNotExistingViolators(violatingDrones);
+
+	await Promise.all([addNewViolators(violators.newViolators, capturedAt), updatePilots()]);
 };

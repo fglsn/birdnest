@@ -8,9 +8,7 @@ const entryMapper = (row: any): ViolatorEntry => {
 		phone: row['phone_number'] as string,
 		email: row['email'] as string,
 		serialNumber: row['serial_number'] as string,
-		positionX: row['position_x'] as number,
-		positionY: row['position_y'] as number,
-		distance: row['distance'] as number,
+		closestDistance: row['closest_distance'] as number,
 		lastSeen: row['last_seen'] as Date
 	};
 };
@@ -18,7 +16,7 @@ const entryMapper = (row: any): ViolatorEntry => {
 const checkReportEntry = async (serialNumber: string): Promise<boolean> => {
 	const query = {
 		text: `select * 
-				from violator_entries 
+				from pilots 
 				where serial_number = $1`,
 		values: [serialNumber]
 	};
@@ -29,41 +27,54 @@ const checkReportEntry = async (serialNumber: string): Promise<boolean> => {
 	return true;
 };
 
-const updateExistingRecord = async (drone: ViolatorDrone, snapshotTimestamp: Date) => {
+const updatePilots = async () => {
 	const query = {
-		text: `update violator_entries 
-				set distance = $1, 
-					position_x = $2, 
-					position_y = $3, 
-					last_seen = $4 
-				where serial_number = $5 and distance > $1`,
-		values: [drone.distance, drone.positionX, drone.positionY, snapshotTimestamp, drone.serialNumber]
+		text: `update pilots 
+				set closest_distance=subquery.distance,
+					last_seen=subquery.last_seen
+				from (select serial_number, min(d.distance) as distance, max(d.captured_at) as last_seen
+					from drone_position_entries d
+					where d.captured_at >= now() - interval '10 minutes'
+					group by serial_number) as subquery
+				where pilots.serial_number = subquery.serial_number;`,
+		values: []
 	};
 	await pool.query(query);
 };
 
-const addNewEntry = async (violatorEntry: ViolatorEntry) => {
+const addPostitonEntries = async (positionData: ViolatorDrone, capturedAt: Date) => {
+	const { serialNumber, positionX, positionY, distance } = positionData;
 	const query = {
-		text: `insert into violator_entries
+		text: `insert into drone_position_entries
+					(serial_number,
+					position_x,
+					position_y,
+					distance,
+					captured_at) 
+				values($1, $2, $3, $4, $5)`,
+		values: [serialNumber, positionX, positionY, distance, capturedAt]
+	};
+	await pool.query(query);
+};
+
+const addNewPilot = async (violatorEntry: ViolatorEntry) => {
+	const query = {
+		text: `insert into pilots
 					(pilot_name,
 					phone_number,
 					email,
 					serial_number,
-					position_x,
-					position_y,
-					distance,
-					last_seen) 
-				values($1, $2, $3, $4, $5, $6, $7, $8)
+					last_seen,
+					closest_distance) 
+				values($1, $2, $3, $4, $5, $6)
 				on conflict do nothing`,
 		values: [
 			violatorEntry.name,
 			violatorEntry.phone,
 			violatorEntry.email,
 			violatorEntry.serialNumber,
-			violatorEntry.positionX,
-			violatorEntry.positionY,
-			violatorEntry.distance,
-			violatorEntry.lastSeen
+			violatorEntry.lastSeen,
+			violatorEntry.closestDistance
 		]
 	};
 	await pool.query(query);
@@ -72,7 +83,7 @@ const addNewEntry = async (violatorEntry: ViolatorEntry) => {
 const getViolators = async (): Promise<ViolatorEntry[]> => {
 	const query = {
 		text: `select *
-				from violator_entries 
+				from pilots 
 				where last_seen >= now() - interval '10 minutes' 
 				order by last_seen desc`
 	};
@@ -80,4 +91,13 @@ const getViolators = async (): Promise<ViolatorEntry[]> => {
 	return res.rows.map(entryMapper);
 };
 
-export { checkReportEntry, updateExistingRecord, addNewEntry, getViolators };
+const clearExpiredEntries = async () => {
+	const query = {
+		text: `delete
+				from pilots
+				where last_seen <= now() - interval '10 minutes'`
+	};
+	await pool.query(query);
+};
+
+export { checkReportEntry, updatePilots, addPostitonEntries, addNewPilot, getViolators, clearExpiredEntries };

@@ -30,8 +30,6 @@ export type ViolatorEntry = {
 	phone: string;
 	email: string;
 	serialNumber: string;
-	positionX: number;
-	positionY: number;
-	distance: number;
+	closestDistance: number;
 	lastSeen: Date;
 };
