@@ -13,7 +13,7 @@ const entryMapper = (row: any): ViolatorEntry => {
 	};
 };
 
-const checkReportEntry = async (serialNumber: string): Promise<boolean> => {
+const checkIfPilotExists = async (serialNumber: string): Promise<boolean> => {
 	const query = {
 		text: `select * 
 				from pilots 
@@ -33,7 +33,7 @@ const updatePilots = async () => {
 				set closest_distance=subquery.distance,
 					last_seen=subquery.last_seen
 				from (select serial_number, min(d.distance) as distance, max(d.captured_at) as last_seen
-					from drone_position_entries d
+					from drone_positions d
 					where d.captured_at >= now() - interval '10 minutes'
 					group by serial_number) as subquery
 				where pilots.serial_number = subquery.serial_number;`,
@@ -42,10 +42,10 @@ const updatePilots = async () => {
 	await pool.query(query);
 };
 
-const addPostitonEntries = async (positionData: ViolatorDrone, capturedAt: Date) => {
+const addDronePosition = async (positionData: ViolatorDrone, capturedAt: Date) => {
 	const { serialNumber, positionX, positionY, distance } = positionData;
 	const query = {
-		text: `insert into drone_position_entries
+		text: `insert into drone_positions
 					(serial_number,
 					position_x,
 					position_y,
@@ -100,4 +100,4 @@ const clearExpiredEntries = async () => {
 	await pool.query(query);
 };
 
-export { checkReportEntry, updatePilots, addPostitonEntries, addNewPilot, getViolators, clearExpiredEntries };
+export { checkIfPilotExists, updatePilots, addDronePosition, addNewPilot, getViolators, clearExpiredEntries };

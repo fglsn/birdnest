@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { Coordinates, ParsedReport, ViolatorDrone, Pilot } from './types';
-import { addNewPilot, addPostitonEntries, checkReportEntry, updatePilots } from './queries';
+import { addNewPilot, addDronePosition, checkIfPilotExists, updatePilots } from './queries';
 
 const nestPosition: Coordinates = { x: 250000, y: 250000 };
 
@@ -20,20 +20,15 @@ export const getViolatingDrones = (report: ParsedReport): ViolatorDrone[] => {
 	});
 };
 
-export const filterExistingAndNotExistingViolators = async (
-	violatingDrones: ViolatorDrone[]
-): Promise<{ existingViolators: ViolatorDrone[]; newViolators: ViolatorDrone[] }> => {
-	const newViolators: ViolatorDrone[] = [];
-	const existingViolators: ViolatorDrone[] = [];
-
-	await Promise.all(
-		violatingDrones.map(async (drone) => {
-			const recordExists = await checkReportEntry(drone.serialNumber);
-			recordExists ? existingViolators.push(drone) : newViolators.push(drone);
-		})
-	);
-
-	return { existingViolators, newViolators };
+export const getNewViolators = async (violatingDrones: ViolatorDrone[]) => {
+	return (
+		await Promise.all(
+			violatingDrones.map(async (drone) => {
+				const pilotExists = await checkIfPilotExists(drone.serialNumber);
+				return pilotExists ? [] : [drone];
+			})
+		)
+	).flatMap((drone) => drone);
 };
 
 const getPilotData = async (serialNumber: string) => {
@@ -43,7 +38,7 @@ const getPilotData = async (serialNumber: string) => {
 		return undefined;
 	} catch (err) {
 		console.log(err);
-		throw new Error('Can not fetch pilot data');
+		throw new Error('Failed to fetch pilot data');
 	}
 };
 
@@ -70,11 +65,12 @@ export const addNewViolators = async (violators: ViolatorDrone[], snapshotTimest
 };
 
 export const processDroneReport = async (parsedReport: ParsedReport) => {
+	const captureTime = parsedReport.snapshotTimestamp;
 	const violatingDrones = getViolatingDrones(parsedReport);
-	console.log('all violating drones: ', violatingDrones);
-	const capturedAt = parsedReport.snapshotTimestamp;
-	await Promise.all(violatingDrones.map(async (drone) => await addPostitonEntries(drone, capturedAt)));
-	const violators = await filterExistingAndNotExistingViolators(violatingDrones);
 
-	await Promise.all([addNewViolators(violators.newViolators, capturedAt), updatePilots()]);
+	const newViolators = await getNewViolators(violatingDrones);
+	await addNewViolators(newViolators, captureTime);
+
+	await Promise.all(violatingDrones.map(async (drone) => await addDronePosition(drone, captureTime)));
+	await updatePilots();
 };
