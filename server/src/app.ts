@@ -5,7 +5,7 @@ import cors from 'cors';
 
 import { getReport } from './getReport';
 import { processDroneReport } from './processReport';
-import { getViolators } from './queries';
+import { clearExpiredEntries, getViolators } from './queries';
 export const app = express();
 
 app.use(express.json({ limit: '50mb' }));
@@ -19,6 +19,7 @@ app.get(
 			const report = await getReport();
 			await processDroneReport(report);
 			const violators = await getViolators();
+			await clearExpiredEntries();
 			res.status(200).json(violators);
 		} catch (err) {
 			console.log(err);
