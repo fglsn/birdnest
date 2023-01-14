@@ -1,5 +1,5 @@
 import pool from './db';
-import { DroneData, ViolatorEntry } from './types';
+import { ViolatorDrone, ViolatorEntry } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const entryMapper = (row: any): ViolatorEntry => {
@@ -17,7 +17,9 @@ const entryMapper = (row: any): ViolatorEntry => {
 
 const checkReportEntry = async (serialNumber: string): Promise<boolean> => {
 	const query = {
-		text: 'select * from violator_entries where serial_number = $1',
+		text: `select * 
+				from violator_entries 
+				where serial_number = $1`,
 		values: [serialNumber]
 	};
 	const res = await pool.query(query);
@@ -27,15 +29,15 @@ const checkReportEntry = async (serialNumber: string): Promise<boolean> => {
 	return true;
 };
 
-const updateExistingRecord = async (drone: DroneData, distance: number, snapshotTimestamp: Date) => {
+const updateExistingRecord = async (drone: ViolatorDrone, snapshotTimestamp: Date) => {
 	const query = {
 		text: `update violator_entries 
-						set distance = $1, 
-							position_x = $2, 
-							position_y = $3, 
-							last_seen = $4 
-						where serial_number = $5 and distance >= $2`,
-		values: [distance, drone.positionX, drone.positionY, snapshotTimestamp, drone.serialNumber]
+				set distance = $1, 
+					position_x = $2, 
+					position_y = $3, 
+					last_seen = $4 
+				where serial_number = $5 and distance > $1`,
+		values: [drone.distance, drone.positionX, drone.positionY, snapshotTimestamp, drone.serialNumber]
 	};
 	await pool.query(query);
 };
@@ -69,13 +71,13 @@ const addNewEntry = async (violatorEntry: ViolatorEntry) => {
 
 const getViolators = async (): Promise<ViolatorEntry[]> => {
 	const query = {
-		text: "select * from violator_entries where last_seen >= now() - interval '10 minutes' order by last_seen desc"
+		text: `select *
+				from violator_entries 
+				where last_seen >= now() - interval '10 minutes' 
+				order by last_seen desc`
 	};
 	const res = await pool.query(query);
-	if (!res.rowCount) {
-		return [];
-	}
-	return res.rows.map((row) => entryMapper(row));
+	return res.rows.map(entryMapper);
 };
 
 export { checkReportEntry, updateExistingRecord, addNewEntry, getViolators };

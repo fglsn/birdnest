@@ -1,5 +1,6 @@
+import axios from 'axios';
 import { Element, xml2js } from 'xml-js';
-import { DroneData } from './types';
+import { DroneData, ParsedReport } from './types';
 
 const isString = (text: unknown): text is string => {
 	return typeof text === 'string' || text instanceof String;
@@ -11,12 +12,10 @@ const getElementsByName = (element: Element[], name: string): Element[] | undefi
 
 const getTextFieldValue = (drone: Element, field: string): string => {
 	const elements = getElementsByName(drone.elements || [], field);
-	if (!elements || !elements.length)
-		throw new Error(`Missing value for the ${field} field.`);
+	if (!elements || !elements.length) throw new Error(`Missing value for the ${field} field.`);
 
 	const value = elements[0].elements?.[0].text;
-	if (!isString(value))
-		throw new Error(`Expected value to be string, got ${typeof value}.`);
+	if (!isString(value)) throw new Error(`Expected value to be string, got ${typeof value}.`);
 	return value;
 };
 
@@ -27,7 +26,7 @@ const parseDrone = (droneElements: Element): DroneData => {
 	return { serialNumber, positionX: Number(positionX), positionY: Number(positionY) };
 };
 
-export const parseReport = (reportPayload: string) => {
+const parseReport = (reportPayload: string): ParsedReport => {
 	const convertedPayload = xml2js(reportPayload) as Element;
 
 	const report = convertedPayload.elements;
@@ -42,8 +41,7 @@ export const parseReport = (reportPayload: string) => {
 	if (!capture || !capture.length) throw new Error('Missing capture data.');
 
 	const snapshotTimestamp = capture[0].attributes?.snapshotTimestamp;
-	if (!snapshotTimestamp || !isString(snapshotTimestamp))
-		throw new Error('Missing timestamp.');
+	if (!snapshotTimestamp || !isString(snapshotTimestamp)) throw new Error('Missing timestamp.');
 
 	const droneElements = capture[0].elements || [];
 
@@ -54,4 +52,9 @@ export const parseReport = (reportPayload: string) => {
 	});
 
 	return { snapshotTimestamp: new Date(snapshotTimestamp), drones };
+};
+
+export const getReport = async (): Promise<ParsedReport> => {
+	const response = await axios.get('http://assignments.reaktor.com/birdnest/drones');
+	return parseReport(response.data as string);
 };
