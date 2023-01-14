@@ -69,7 +69,7 @@ const addNewEntry = async (violatorEntry: ViolatorEntry) => {
 
 const getViolators = async (): Promise<ViolatorEntry[]> => {
 	const query = {
-		text: "select * from violator_entries where last_seen <= now() - interval '10 minutes'"
+		text: "select * from violator_entries where last_seen >= now() - interval '10 minutes' order by last_seen desc"
 	};
 	const res = await pool.query(query);
 	if (!res.rowCount) {
