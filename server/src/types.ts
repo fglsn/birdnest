@@ -1,3 +1,5 @@
+import * as t from 'io-ts';
+
 export type DroneData = {
 	positionX: number;
 	positionY: number;
@@ -16,19 +18,21 @@ export type Coordinates = {
 
 export type ViolatorDrone = DroneData & { distance: number };
 
-export type Pilot = {
-	pilotId: string;
-	firstName: string;
-	lastName: string;
-	phoneNumber: string;
-	email: string;
-	createdDt: string;
-};
+export const PilotSchema = t.type({
+	pilotId: t.string,
+	firstName: t.string,
+	lastName: t.string,
+	phoneNumber: t.string,
+	createdDt: t.string,
+	email: t.string
+});
+
+export type Pilot = t.TypeOf<typeof PilotSchema>;
 
 export type ViolatorEntry = {
-	name: string;
-	phone: string;
-	email: string;
+	name: string | undefined;
+	phone: string | undefined;
+	email: string | undefined;
 	serialNumber: string;
 	closestDistance: number;
 	lastSeen: Date;

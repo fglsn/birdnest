@@ -1,7 +1,7 @@
 create table pilots (
-	pilot_name varchar not null,
-	phone_number varchar not null,
-	email varchar not null,
+	pilot_name varchar,
+	phone_number varchar,
+	email varchar,
 	serial_number varchar not null unique,
 	last_seen timestamptz not null,
 	closest_distance double precision not null
@@ -16,4 +16,4 @@ create table drone_positions (
 	captured_at timestamptz not null
 );
 
-create index pilots_serial_number on pilots (serial_number);
+create index pilots_last_seen on pilots (last_seen);

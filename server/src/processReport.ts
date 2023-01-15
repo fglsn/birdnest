@@ -1,7 +1,7 @@
 import axios from 'axios';
-
-import { Coordinates, ParsedReport, ViolatorDrone, Pilot } from './types';
-import { addNewPilot, addDronePosition, checkIfPilotExists, updatePilots } from './queries';
+import { Coordinates, ParsedReport, ViolatorDrone, PilotSchema } from './types';
+import { addNewPilot, addDronePosition, checkIfPilotExistsAndHasData, updatePilots } from './queries';
+import { isRight } from 'fp-ts/lib/Either';
 
 const nestPosition: Coordinates = { x: 250000, y: 250000 };
 
@@ -24,7 +24,7 @@ export const getNewViolators = async (violatingDrones: ViolatorDrone[]) => {
 	return (
 		await Promise.all(
 			violatingDrones.map(async (drone) => {
-				const pilotExists = await checkIfPilotExists(drone.serialNumber);
+				const pilotExists = await checkIfPilotExistsAndHasData(drone.serialNumber);
 				return pilotExists ? [] : [drone];
 			})
 		)
@@ -33,12 +33,19 @@ export const getNewViolators = async (violatingDrones: ViolatorDrone[]) => {
 
 const getPilotData = async (serialNumber: string) => {
 	try {
-		const response = await axios.get(`http://assignments.reaktor.com/birdnest/pilots/${serialNumber}`);
-		if (response && response.data) return response.data as Pilot;
-		return undefined;
+		const response = await axios.get<string>(`http://assignments.reaktor.com/birdnest/pilots/${serialNumber}`);
+		if (!response.data) console.log('Failed to fetch pilot data from URL');
+
+		const pilotData = PilotSchema.decode(response.data);
+		if (isRight(pilotData)) {
+			return pilotData.right;
+		} else {
+			console.log('Error parsing pilot data payload: ', pilotData.left);
+			return undefined;
+		}
 	} catch (err) {
-		console.log(err);
-		throw new Error('Failed to fetch pilot data');
+		console.log('Error getting pilot data: ', err);
+		return undefined;
 	}
 };
 
@@ -46,20 +53,29 @@ export const addNewViolators = async (violators: ViolatorDrone[], snapshotTimest
 	await Promise.all(
 		violators.map(async (drone) => {
 			const pilotData = await getPilotData(drone.serialNumber);
-			if (!pilotData) throw new Error('Missing pilot data');
+			if (!pilotData) {
+				await addNewPilot({
+					name: undefined,
+					phone: undefined,
+					email: undefined,
+					serialNumber: drone.serialNumber,
+					lastSeen: snapshotTimestamp,
+					closestDistance: drone.distance
+				});
+			} else {
+				const pilotContacts = {
+					name: pilotData.firstName + ' ' + pilotData.lastName,
+					phone: pilotData.phoneNumber,
+					email: pilotData.email
+				};
 
-			const pilotContacts = {
-				name: pilotData.firstName + ' ' + pilotData.lastName,
-				phone: pilotData.phoneNumber,
-				email: pilotData.email
-			};
-
-			await addNewPilot({
-				...pilotContacts,
-				serialNumber: drone.serialNumber,
-				lastSeen: snapshotTimestamp,
-				closestDistance: drone.distance
-			});
+				await addNewPilot({
+					...pilotContacts,
+					serialNumber: drone.serialNumber,
+					lastSeen: snapshotTimestamp,
+					closestDistance: drone.distance
+				});
+			}
 		})
 	);
 };

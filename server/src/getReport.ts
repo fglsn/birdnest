@@ -55,6 +55,7 @@ const parseReport = (reportPayload: string): ParsedReport => {
 };
 
 export const getReport = async (): Promise<ParsedReport> => {
-	const response = await axios.get('http://assignments.reaktor.com/birdnest/drones');
-	return parseReport(response.data as string);
+	const response = await axios.get<string>('http://assignments.reaktor.com/birdnest/drones');
+	if (!response || !response.data) throw new Error('Failed to load XML report.');
+	return parseReport(response.data);
 };

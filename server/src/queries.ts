@@ -13,11 +13,14 @@ const entryMapper = (row: any): ViolatorEntry => {
 	};
 };
 
-const checkIfPilotExists = async (serialNumber: string): Promise<boolean> => {
+const checkIfPilotExistsAndHasData = async (serialNumber: string): Promise<boolean> => {
 	const query = {
 		text: `select * 
 				from pilots 
-				where serial_number = $1`,
+				where serial_number = $1 
+					and pilot_name is not null 
+					and phone_number is not null 
+					and email is not null`,
 		values: [serialNumber]
 	};
 	const res = await pool.query(query);
@@ -67,7 +70,14 @@ const addNewPilot = async (violatorEntry: ViolatorEntry) => {
 					last_seen,
 					closest_distance) 
 				values($1, $2, $3, $4, $5, $6)
-				on conflict do nothing`,
+				on conflict (serial_number)
+				do update set
+						pilot_name = $1,
+						phone_number = $2,
+						email = $3,
+						last_seen = $5,
+						closest_distance = $6
+					`,
 		values: [
 			violatorEntry.name,
 			violatorEntry.phone,
@@ -95,9 +105,9 @@ const clearExpiredEntries = async () => {
 	const query = {
 		text: `delete
 				from pilots
-				where last_seen <= now() - interval '10 minutes'`
+				where last_seen < now() - interval '10 minutes'`
 	};
 	await pool.query(query);
 };
 
-export { checkIfPilotExists, updatePilots, addDronePosition, addNewPilot, getViolators, clearExpiredEntries };
+export { checkIfPilotExistsAndHasData, updatePilots, addDronePosition, addNewPilot, getViolators, clearExpiredEntries };
