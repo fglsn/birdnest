@@ -1,7 +1,7 @@
 import axios from 'axios';
+import { isRight } from 'fp-ts/lib/Either';
 import { Coordinates, ParsedReport, ViolatorDrone, PilotSchema } from './types';
 import { addNewPilot, addDronePosition, checkIfPilotExistsAndHasData, updatePilots } from './queries';
-import { isRight } from 'fp-ts/lib/Either';
 
 const nestPosition: Coordinates = { x: 250000, y: 250000 };
 
