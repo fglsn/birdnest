@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
-import styled from '@emotion/styled';
-import { Container, Card, CardContent, Box, Typography } from '@mui/material';
 import { Violator } from './types';
+import { Container, Card, CardContent, Box, Typography, styled } from '@mui/material';
 import CurrentPosition from './CurrentPosition';
 
 export const StyledContainer = styled(Container)({
@@ -37,22 +36,17 @@ const ViolatorCard = ({ violator }: { violator: Violator }) => {
 			<StyledCard sx={{ flexDirection: { sm: 'column', md: 'row' } }}>
 				<StyledCardContent>
 					<Box>
-						<Typography variant="h5" component="div">
+						<Typography fontSize={32} mb={1} component="div">
 							{violator.name}
 						</Typography>
-						<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-							{violator.email} <br />
-						</Typography>
-						<Typography sx={{ mb: 1.5 }} color="text.secondary">
-							{violator.phone}
+						<Typography fontSize={20} color="text.secondary" gutterBottom>
+							{violator.email} <br /> {violator.phone}
 						</Typography>
 					</Box>
 					<Box>
-						<Typography variant="body2">
-							Closest violation:{' '}
-							<Typography>
-								{Math.floor(violator.closestDistance / 1000)}m <br />
-							</Typography>
+						<Typography fontSize={17} mt={2}>Closest violation: </Typography>
+						<Typography fontSize={21}>
+							{Math.floor(violator.closestDistance / 1000)}m <br />
 						</Typography>
 					</Box>
 				</StyledCardContent>

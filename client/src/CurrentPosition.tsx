@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, styled } from '@mui/material';
 
 const dashedCircle = {
 	cx: 250,
@@ -7,18 +7,18 @@ const dashedCircle = {
 	fill: 'none'
 };
 
+const StyledBox = styled(Box)({
+	width: '70%',
+	height: '70%',
+	padding: '0.5em',
+	margin: '0.5em'
+});
+
 const CurrentPosition = ({ x, y }: { x: number; y: number }) => {
 	const posX = Math.floor(x / 1000);
 	const posY = Math.floor(y / 1000);
 	return (
-		<Box
-			style={{
-				width: '70%',
-				height: '70%',
-				padding: '0.5em',
-				margin: '0.5em'
-			}}
-		>
+		<StyledBox>
 			<svg
 				viewBox="0 0 500 500"
 				style={{
@@ -38,7 +38,7 @@ const CurrentPosition = ({ x, y }: { x: number; y: number }) => {
 				<line x1="0" y1="250" x2="500" y2="250" stroke="grey" />
 				<line x1="250" y1="0" x2="250" y2="500" stroke="grey" />
 			</svg>
-		</Box>
+		</StyledBox>
 	);
 };
 

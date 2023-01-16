@@ -6,7 +6,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import ViolatorCard, { StyledContainer } from './ViolatorCard';
-
+import ArrowCircleUpRoundedIcon from '@mui/icons-material/ArrowCircleUpRounded';
 dayjs.extend(relativeTime);
 
 const App = () => {
@@ -27,14 +27,28 @@ const App = () => {
 		return () => clearInterval(interval);
 	}, []);
 
+	const handleClick = () => window.scrollTo(0, 0);
+
+	const mostFlagrantViolatior =
+		violators &&
+		violators.reduce((previous, current) => {
+			return current.closestDistance < previous.closestDistance ? current : previous;
+		});
 	return (
 		<StyledContainer maxWidth="md">
-			<Typography sx={{ fontWeight: '700', fontSize: '3rem' }} m={5}>
+			<Typography sx={{ fontWeight: '700', fontSize: '3rem' }} color={'#d88787'} mt={5}>
 				NDZ Violators
-				<Typography sx={{ fontWeight: '400', fontSize: '2rem' }}>
-					Records for the past 10 minutes:
-				</Typography>
 			</Typography>
+			<Typography sx={{ fontWeight: '400', fontSize: '2rem' }} color={'#524f4f'} mb={3}>
+				Records for the past 10 minutes
+			</Typography>
+			{mostFlagrantViolatior && (
+				<Typography fontSize={18}>
+					The most severe violation was detected at a distance of{' '}
+					{Math.floor(mostFlagrantViolatior.closestDistance) / 1000} meters from the
+					nest
+				</Typography>
+			)}
 			{violators ? (
 				violators.length ? (
 					violators.map((violator, i) => {
@@ -54,6 +68,13 @@ const App = () => {
 					<CircularProgress />
 				</Container>
 			)}
+			<Container>
+				<ArrowCircleUpRoundedIcon
+					fontSize={'large'}
+					sx={{ margin: 2, color: '#d88787' }}
+					onClick={handleClick}
+				/>
+			</Container>
 		</StyledContainer>
 	);
 };
