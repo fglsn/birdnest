@@ -5,6 +5,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+    background-image: url("https://assignments.reaktor.com/birdnest/img/birdnest01.webp");
+    background-size: cover;
+    background-repeat: 'repeat-y';
+    display: 'flex';
+    flex-direction: 'column';
+    align-items: 'center';
 }
 
 code {
