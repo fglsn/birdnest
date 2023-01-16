@@ -5,4 +5,6 @@ export type Violator = {
 	serialNumber: string;
 	closestDistance: number;
 	lastSeen: Date;
+	lastSeenPositionX: number;
+	lastSeenPositionY: number;
 };
