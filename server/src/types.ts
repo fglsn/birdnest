@@ -36,4 +36,6 @@ export type ViolatorEntry = {
 	serialNumber: string;
 	closestDistance: number;
 	lastSeen: Date;
+	lastSeenPositionX: number;
+	lastSeenPositionY: number;
 };

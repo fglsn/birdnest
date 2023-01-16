@@ -1,7 +1,13 @@
 import axios from 'axios';
 import { isRight } from 'fp-ts/lib/Either';
 import { Coordinates, ParsedReport, ViolatorDrone, PilotSchema } from './types';
-import { addNewPilot, addDronePosition, checkIfPilotExistsAndHasData, updatePilots } from './queries';
+import {
+	addNewPilot,
+	addDronePosition,
+	checkIfPilotExistsAndHasData,
+	updateClosestDistances,
+	updateLatestPosition
+} from './queries';
 
 const nestPosition: Coordinates = { x: 250000, y: 250000 };
 
@@ -52,15 +58,20 @@ const getPilotData = async (serialNumber: string) => {
 export const addNewViolators = async (violators: ViolatorDrone[], snapshotTimestamp: Date) => {
 	await Promise.all(
 		violators.map(async (drone) => {
+			const droneData = {
+				serialNumber: drone.serialNumber,
+				lastSeen: snapshotTimestamp,
+				closestDistance: drone.distance,
+				lastSeenPositionX: drone.positionX,
+				lastSeenPositionY: drone.positionY
+			};
 			const pilotData = await getPilotData(drone.serialNumber);
 			if (!pilotData) {
 				await addNewPilot({
 					name: undefined,
 					phone: undefined,
 					email: undefined,
-					serialNumber: drone.serialNumber,
-					lastSeen: snapshotTimestamp,
-					closestDistance: drone.distance
+					...droneData
 				});
 			} else {
 				const pilotContacts = {
@@ -71,9 +82,7 @@ export const addNewViolators = async (violators: ViolatorDrone[], snapshotTimest
 
 				await addNewPilot({
 					...pilotContacts,
-					serialNumber: drone.serialNumber,
-					lastSeen: snapshotTimestamp,
-					closestDistance: drone.distance
+					...droneData
 				});
 			}
 		})
@@ -87,6 +96,16 @@ export const processDroneReport = async (parsedReport: ParsedReport) => {
 	const newViolators = await getNewViolators(violatingDrones);
 	await addNewViolators(newViolators, captureTime);
 
-	await Promise.all(violatingDrones.map(async (drone) => await addDronePosition(drone, captureTime)));
-	await updatePilots();
+	await Promise.all(
+		violatingDrones.map(async (drone) => {
+			await addDronePosition(drone, captureTime);
+		})
+	);
+
+	await Promise.all(
+		parsedReport.drones.map(async (drone) => {
+			await updateLatestPosition(drone, captureTime);
+		})
+	);
+	await updateClosestDistances();
 };
