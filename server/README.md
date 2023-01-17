@@ -5,9 +5,6 @@
 ### Prepare database:
 	docker-compose up -d
   
-### Create new migration:
-	npm run migration:create --  <migrationName>
-  
 ### To run backend:
 1. Install dependencies:  
 &emsp; `npm install`  
@@ -17,10 +14,12 @@
 &emsp; `npm run dev`  
 
 ### To run frontend:  
-1. Install dependencies:  
+1. Go to the client directory:  
+&emsp; `cd ../client`  
+2. Install dependencies:  
 &emsp; `npm install`  
-2. Start client with:  
-&emsp; `npm install`  
+3. Start client with:  
+&emsp; `npm start`  
   
   
 ## Tests
