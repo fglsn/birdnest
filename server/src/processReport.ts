@@ -1,6 +1,5 @@
-import axios from 'axios';
-import { isRight } from 'fp-ts/lib/Either';
-import { Coordinates, ParsedReport, ViolatorDrone, PilotSchema } from './types';
+import { Coordinates, ParsedReport, ViolatorDrone } from './types';
+import { getPilotData } from './getPilotData';
 import {
 	addNewPilot,
 	addDronePosition,
@@ -35,24 +34,6 @@ export const getNewViolators = async (violatingDrones: ViolatorDrone[]) => {
 			})
 		)
 	).flatMap((drone) => drone);
-};
-
-const getPilotData = async (serialNumber: string) => {
-	try {
-		const response = await axios.get<string>(`http://assignments.reaktor.com/birdnest/pilots/${serialNumber}`);
-		if (!response.data) console.error('Failed to fetch pilot data from URL');
-
-		const pilotData = PilotSchema.decode(response.data);
-		if (isRight(pilotData)) {
-			return pilotData.right;
-		} else {
-			console.error('Error parsing pilot data payload: ', pilotData.left);
-			return undefined;
-		}
-	} catch (err) {
-		console.error('Error getting pilot data: ', err);
-		return undefined;
-	}
 };
 
 export const addNewViolators = async (violators: ViolatorDrone[], snapshotTimestamp: Date) => {

@@ -26,7 +26,7 @@ const parseDrone = (droneElements: Element): DroneData => {
 	return { serialNumber, positionX: Number(positionX), positionY: Number(positionY) };
 };
 
-const parseReport = (reportPayload: string): ParsedReport => {
+export const parseReport = (reportPayload: string): ParsedReport => {
 	const convertedPayload = xml2js(reportPayload) as Element;
 
 	const report = convertedPayload.elements;
