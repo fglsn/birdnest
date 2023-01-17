@@ -79,7 +79,10 @@ Information is being updated every two seconds and being stored for the duration
 ## Tests
 Run test migration:  
 &emsp; `npm run migrate:test`  
-  
+
+Run test suit:  
+&emsp; `npm run test`  
+
 to run one test, use for.ex:  
 &emsp; `npm test -- tests/process_report.test.js`  
 or  
