@@ -1,6 +1,5 @@
 import asyncHandler from 'express-async-handler';
 import express from 'express';
-//import dotenv from 'dotenv';
 import cors from 'cors';
 
 import { getReport } from './getReport';
@@ -10,9 +9,10 @@ import { NextFunction, Request, Response } from 'express';
 
 export const app = express();
 
+app.use(express.static('build'));
+
 app.use(express.json({ limit: '50mb' }));
 app.use(cors());
-//dotenv.config();
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const globalErrorHandler = (err: any, _req: Request, res: Response, _next: NextFunction) => {

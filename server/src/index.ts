@@ -2,7 +2,7 @@ import { app, updatePilotsState } from './app';
 import { setIntervalAsync } from 'set-interval-async';
 import { clearExpiredEntries } from './queries';
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 setIntervalAsync(async () => {
 	try {

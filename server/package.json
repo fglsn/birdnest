@@ -4,8 +4,9 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start": "NODE_ENV=production node build/index.js",
+		"start": "NODE_ENV=production ts-node-dev src/index.ts",
 		"dev": "NODE_ENV=development ts-node-dev src/index.ts",
+		"build:ui": "rm -rf build && cd ../client && npm run build && cp -r build ../server/",
 		"test": "NODE_ENV=test jest --verbose --runInBand --forceExit",
 		"connect-db": "psql postgresql://localhost:5434/birdnest -U postgres",
 		"connect-db:test": "psql postgresql://localhost:5435/birdnest-test -U postgres",
