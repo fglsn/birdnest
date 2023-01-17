@@ -1,11 +1,6 @@
 import { app, updatePilotsState } from './app';
 import { setIntervalAsync } from 'set-interval-async';
 import { clearExpiredEntries } from './queries';
-import * as dotenv from 'dotenv';
-
-if (process.env.NODE_ENV !== 'production') {
-	dotenv.config();
-}
 
 const PORT = process.env.PORT || 3001;
 
