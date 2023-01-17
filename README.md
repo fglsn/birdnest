@@ -4,6 +4,9 @@
   
 This is a web application built with <strong>TypeScript</strong>, <strong>Node.js</strong>, <strong>Express</strong>, <strong>Postgres</strong> and <strong>React</strong> that displays a list of pilots who have recently violated the NDZ (No-Drone Zone) perimeter.  
   
+### Deployed version: <a href='https://birdnest-3wmh.onrender.com/'>Birdnest | NDZ Violators</a>  
+![alt text](https://github.com/fglsn/birdnest/blob/main/client/public/Screenshot.png?raw=true)  
+  
 ## Functionality  
 
 The app displays all pilots who have violated the NDZ perimeter in the last 10 minutes.   
@@ -53,4 +56,4 @@ Information is being updated every two seconds and being stored for the duration
 <i>This project was done as a part of the programming assignment, the functionality of the application is limited to the given <a href="https://assignments.reaktor.com/birdnest/">requirements</a> of the assignment.</i>  
 
 My workflow and notes may be found <a href="https://trello.com/b/yIzF2qnH/birdnest">here</a>  
-Deployed version: <a href='https://birdnest-3wmh.onrender.com/'>Birdnest | NDZ Violators</a>
+
