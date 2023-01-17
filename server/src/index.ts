@@ -12,7 +12,7 @@ setIntervalAsync(async () => {
 		console.log('Clearing expired pilot entries.');
 		await clearExpiredEntries();
 	} catch (err) {
-		console.log('Error occured in the backgroud: ', err);
+		console.error('Error occured in the backgroud: ', err);
 	}
 }, 2000);
 

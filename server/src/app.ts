@@ -16,7 +16,7 @@ app.use(cors());
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const globalErrorHandler = (err: any, _req: Request, res: Response, _next: NextFunction) => {
-	console.log('Unexpected error: ', err);
+	console.error('Unexpected error: ', err);
 	res.status(500).json({
 		error: 'Unexpected error: ' + err
 	});
