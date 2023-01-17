@@ -6,7 +6,7 @@
 	"scripts": {
 		"start": "NODE_ENV=production ts-node-dev src/index.ts",
 		"dev": "NODE_ENV=development ts-node-dev src/index.ts",
-		"build:ui": "rm -rf build && npm install && cd ../client && npm install && npm run build && cp -r build ../server/",
+		"build:ui": "rm -rf build && npm install && npm run migrate && cd ../client && npm install && npm run build && cp -r build ../server/",
 		"test": "NODE_ENV=test jest --verbose --runInBand --forceExit",
 		"connect-db": "psql postgresql://localhost:5434/birdnest -U postgres",
 		"connect-db:test": "psql postgresql://localhost:5435/birdnest-test -U postgres",

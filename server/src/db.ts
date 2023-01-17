@@ -1,11 +1,11 @@
 import { Pool } from 'pg';
-import { DB_PORT, DB_NAME } from './config';
+import { DB_NAME, DB_PORT } from './config';
 
 const pool = new Pool({
-	user: 'postgres',
-	host: 'localhost',
+	user: process.env.DB_USER,
+	host: process.env.DB_HOST,
 	database: DB_NAME,
-	password: 'postgres',
+	password: process.env.DB_PASSWORD,
 	port: DB_PORT
 });
 

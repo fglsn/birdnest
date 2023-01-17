@@ -1,20 +1,20 @@
 {
 	"local": {
 		"driver": "pg",
-		"user": "postgres",
-		"password": "postgres",
-		"host": "localhost",
-		"database": "birdnest",
-		"port": "5434",
+		"user": { "ENV": "DB_USER" },
+		"password": { "ENV": "DB_PASSWORD" },
+		"host": { "ENV": "DB_HOST" },
+		"database": { "ENV": "DB_NAME" },
+		"port": { "ENV": "DB_PORT" },
 		"schema": "public"
 	},
 	"test": {
 		"driver": "pg",
-		"user": "postgres",
-		"password": "postgres",
-		"host": "localhost",
-		"database": "birdnest-test",
-		"port": "5435",
+		"user": { "ENV": "DB_USER" },
+		"password": { "ENV": "DB_PASSWORD" },
+		"host": { "ENV": "DB_HOST" },
+		"database": { "ENV": "DB_NAME_TEST" },
+		"port": { "ENV": "DB_PORT_TEST" },
 		"schema": "public"
 	},
 	"sql-file": true
