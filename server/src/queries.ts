@@ -36,7 +36,7 @@ const updateClosestDistances = async () => {
 	const query = {
 		text: `update violators 
 				set closest_distance=subquery.distance
-				from (select serial_number, min(d.distance) as distance, max(d.captured_at) as last_seen
+				from (select serial_number, min(d.distance) as distance
 					from drone_positions d
 					where d.captured_at >= now() - interval '10 minutes'
 					group by serial_number) as subquery
