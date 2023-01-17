@@ -53,3 +53,4 @@ Information is being updated every two seconds and being stored for the duration
 <i>This project was done as a part of the programming assignment, the functionality of the application is limited to the given <a href="https://assignments.reaktor.com/birdnest/">requirements</a> of the assignment.</i>  
 
 My workflow and notes may be found <a href="https://trello.com/b/yIzF2qnH/birdnest">here</a>  
+Deployed version: <a href='https://birdnest-3wmh.onrender.com/'>Birdnest | NDZ Violators</a>
