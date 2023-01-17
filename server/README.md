@@ -1,20 +1,29 @@
-**Initial Setup**
+# How to run locally
+### Go to the server directory:  
+	cd server
   
-run containers in background:  
-	&emsp; `docker-compose up -d`  
+### Prepare database:
+	docker-compose up -d
   
-connect to postgres:  
-	&emsp; `psql postgresql://localhost:5432/matcha -U postgres`  
+### Create new migration:
+	npm run migration:create --  <migrationName>
   
-**Migrations**
-  
-To create new migration run:  
-&emsp; `npm run migration:create --  <migrationName>`  
-  
-Run migration:  
+### To run backend:
+1. Install dependencies:  
+&emsp; `npm install`  
+2. Migrate database:  
 &emsp; `npm run migrate`  
+3. Start the server:  
+&emsp; `npm run dev`  
+
+### To run frontend:  
+1. Install dependencies:  
+&emsp; `npm install`  
+2. Start client with:  
+&emsp; `npm install`  
   
-**Tests**  
+  
+## Tests
 Run test migration:  
 &emsp; `npm run migrate:test`  
   
@@ -23,12 +32,3 @@ to run one test, use for.ex:
 or  
 &emsp; `npm test -- -t 'test desc/name'`  
   
-**express-async-handler**  
-middleware added for handling missed errors on async functions  
-every endpoint should be wrapped with asyncHandler();  
-https://www.npmjs.com/package/express-async-handler  
-  
-**db-migrate**  
-Database migration framework for node.js  
-Basic usage: db-migrate [up|down|reset|create|db] [[dbname/]migrationName|all] [options]  
-https://db-migrate.readthedocs.io/en/latest/  
