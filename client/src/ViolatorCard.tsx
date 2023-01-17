@@ -44,9 +44,11 @@ const ViolatorCard = ({ violator }: { violator: Violator }) => {
 						</Typography>
 					</Box>
 					<Box>
-						<Typography fontSize={17} mt={2}>Closest violation: </Typography>
+						<Typography fontSize={17} mt={2}>
+							Closest violation:{' '}
+						</Typography>
 						<Typography fontSize={21}>
-							{Math.floor(violator.closestDistance / 1000)}m <br />
+							{Math.round(violator.closestDistance / 1000)}m <br />
 						</Typography>
 					</Box>
 				</StyledCardContent>

@@ -15,8 +15,8 @@ const StyledBox = styled(Box)({
 });
 
 const CurrentPosition = ({ x, y }: { x: number; y: number }) => {
-	const posX = Math.floor(x / 1000);
-	const posY = Math.floor(y / 1000);
+	const posX = Math.round(x / 1000);
+	const posY = Math.round(y / 1000);
 	return (
 		<StyledBox>
 			<svg

@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import ViolatorCard, { StyledContainer } from './ViolatorCard';
 import ArrowCircleUpRoundedIcon from '@mui/icons-material/ArrowCircleUpRounded';
+import Footer from './Footer';
 dayjs.extend(relativeTime);
 
 const App = () => {
@@ -45,7 +46,7 @@ const App = () => {
 			{mostFlagrantViolatior && (
 				<Typography fontSize={18}>
 					The most severe violation was detected at a distance of{' '}
-					{Math.floor(mostFlagrantViolatior.closestDistance) / 1000} meters from the
+					{Math.round(mostFlagrantViolatior.closestDistance) / 1000} meters from the
 					nest
 				</Typography>
 			)}
@@ -75,6 +76,7 @@ const App = () => {
 					onClick={handleClick}
 				/>
 			</Container>
+			<Footer/>
 		</StyledContainer>
 	);
 };
