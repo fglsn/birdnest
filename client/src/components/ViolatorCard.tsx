@@ -39,7 +39,7 @@ const ViolatorCard = ({ violator }: { violator: Violator }) => {
 					{!violator.name || !violator.email || !violator.phone ? (
 						<Box>
 							<Typography fontSize={32} mb={1} component="div">
-								Missing violators info
+								Missing violator info
 							</Typography>
 						</Box>
 					) : (
