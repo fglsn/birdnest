@@ -1,19 +1,19 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-    background-image: url("https://assignments.reaktor.com/birdnest/img/birdnest01.webp");
-    background-size: cover;
-    background-repeat: 'repeat-y';
-    display: 'flex';
-    flex-direction: 'column';
-    align-items: 'center';
+margin: 0;
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+	'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+	sans-serif;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+	background-image: url("https://assignments.reaktor.com/birdnest/img/birdnest01.webp");
+	background-size: cover;
+	background-repeat: 'repeat-y';
+	display: 'flex';
+	flex-direction: 'column';
+	align-items: 'center';
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+	monospace;
 }

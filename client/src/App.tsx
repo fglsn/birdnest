@@ -1,14 +1,17 @@
-import { useEffect, useState } from 'react';
-import { Violator } from './types';
-import { Typography, Container } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import ViolatorCard, { StyledContainer } from './ViolatorCard';
+import { useEffect, useState } from 'react';
+import { Violator } from './types';
+import { Typography, Container } from '@mui/material';
 import ArrowCircleUpRoundedIcon from '@mui/icons-material/ArrowCircleUpRounded';
-import Footer from './Footer';
+import CircularProgress from '@mui/material/CircularProgress';
+import ViolatorCard, { StyledContainer } from './components/ViolatorCard';
+import Footer from './components/Footer';
+
 dayjs.extend(relativeTime);
+
+const baseUrl = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3001';
 
 const App = () => {
 	const [violators, setViolators] = useState<Violator[] | undefined>(undefined);
@@ -16,7 +19,7 @@ const App = () => {
 	useEffect(() => {
 		const getViolators = async () => {
 			try {
-				const response = await axios.get<Violator[]>(`http://localhost:3001/report`);
+				const response = await axios.get<Violator[]>(`${baseUrl}/report`);
 				setViolators(response.data);
 			} catch (err) {
 				console.log(err);
@@ -54,7 +57,7 @@ const App = () => {
 				violators.length ? (
 					violators.map((violator, i) => {
 						return (
-							<StyledContainer sx={{ margin: 2 }} key={violator.serialNumber}>
+							<StyledContainer sx={{ padding: 2 }} key={violator.serialNumber}>
 								<ViolatorCard violator={violator} />
 							</StyledContainer>
 						);
@@ -76,7 +79,7 @@ const App = () => {
 					onClick={handleClick}
 				/>
 			</Container>
-			<Footer/>
+			<Footer />
 		</StyledContainer>
 	);
 };

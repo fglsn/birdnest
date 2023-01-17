@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Violator } from './types';
+import { Violator } from '../types';
 import { Container, Card, CardContent, Box, Typography, styled } from '@mui/material';
 import CurrentPosition from './CurrentPosition';
 
@@ -16,7 +16,8 @@ const StyledCard = styled(Card)({
 	justifyContent: 'space-around',
 	textAlign: 'center',
 	alignItems: 'center',
-	backgroundColor: '#ffffffe3'
+	maxWidth: '100%',
+	overflow: 'scroll',
 });
 
 const StyledCardContent = styled(CardContent)({
