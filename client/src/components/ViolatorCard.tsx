@@ -17,7 +17,7 @@ const StyledCard = styled(Card)({
 	textAlign: 'center',
 	alignItems: 'center',
 	maxWidth: '100%',
-	overflow: 'scroll',
+	overflow: 'scroll'
 });
 
 const StyledCardContent = styled(CardContent)({
@@ -36,14 +36,22 @@ const ViolatorCard = ({ violator }: { violator: Violator }) => {
 		<StyledContainer>
 			<StyledCard sx={{ flexDirection: { sm: 'column', md: 'row' } }}>
 				<StyledCardContent>
-					<Box>
-						<Typography fontSize={32} mb={1} component="div">
-							{violator.name}
-						</Typography>
-						<Typography fontSize={20} color="text.secondary" gutterBottom>
-							{violator.email} <br /> {violator.phone}
-						</Typography>
-					</Box>
+					{!violator.name || !violator.email || !violator.phone ? (
+						<Box>
+							<Typography fontSize={32} mb={1} component="div">
+								Missing violators info
+							</Typography>
+						</Box>
+					) : (
+						<Box>
+							<Typography fontSize={32} mb={1} component="div">
+								{violator.name}
+							</Typography>
+							<Typography fontSize={20} color="text.secondary" gutterBottom>
+								{violator.email} <br /> {violator.phone}
+							</Typography>
+						</Box>
+					)}
 					<Box>
 						<Typography fontSize={17} mt={2}>
 							Closest violation:{' '}
